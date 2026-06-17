@@ -1,0 +1,61 @@
+#include <stdio.h> 
+ 
+int max_profit = 0; 
+int n, capacity; 
+int weights[100], values[100]; 
+ 
+ 
+float calculate_bound(int index, int current_weight, int current_profit) { 
+    if (current_weight >= capacity) return 0; 
+ 
+    float bound = (float)current_profit; 
+    int total_weight = current_weight; 
+    int i = index; 
+ 
+  
+    while (i < n && total_weight + weights[i] <= capacity) { 
+        total_weight += weights[i]; 
+        bound += values[i]; 
+        i++; 
+    } 
+ 
+   
+    if (i < n) { 
+        bound += (float)(capacity - total_weight) * values[i] / weights[i]; 
+    } 
+ 
+    return bound; 
+} 
+ 
+void solve_knapsack(int index, int current_weight, int current_profit) { 
+ 
+    if (index == n) { 
+        if (current_profit > max_profit) { 
+            max_profit = current_profit; 
+        } 
+        return; 
+    } 
+ 
+
+    if (current_weight + weights[index] <= capacity) { 
+        solve_knapsack(index + 1, current_weight + weights[index], current_profit + 
+values[index]); 
+    } 
+
+    if (calculate_bound(index + 1, current_weight, current_profit) > max_profit) { 
+        solve_knapsack(index + 1, current_weight, current_profit); 
+    } 
+} 
+ 
+int main() { 
+    printf("Enter number of items and capacity: "); 
+scanf("%d %d", &n, &capacity); 
+printf("Enter weights and values:\n"); 
+for (int i = 0; i < n; i++) { 
+scanf("%d %d", &weights[i], &values[i]); 
+} 
+
+solve_knapsack(0, 0, 0); 
+printf("Maximum Profit: %d\n", max_profit); 
+return 0; 
+}
